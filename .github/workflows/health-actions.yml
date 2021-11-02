@@ -1,0 +1,42 @@
+name: Check code health
+
+on: [push]
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Run lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+          args: --enable-all
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup project
+        run: make setup
+
+      - name: Run tests
+        run: |
+          make test
+
+  Vulnerability:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Run Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: ./...

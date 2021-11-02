@@ -1,0 +1,42 @@
+name: Generate an release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run:  yarn add semantic-release@v18.0.0  @semantic-release/changelog @semantic-release/git
+
+      - name: Generate an release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: yarn semantic-release
+
+  Build:
+    needs: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup project
+        run: make setup
+
+      - name: Build the server
+        run: make build
