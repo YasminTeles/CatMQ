@@ -14,7 +14,7 @@ run: ## Run local server.
 	@go run main.go
 
 test: ## Run test.
-	@go test -v ./... -covermode=atomic
+	@go test -v ./... -covermode=atomic -count=1
 
 build: ## Build server.
 	@go build -v -o main .
