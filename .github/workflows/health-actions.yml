@@ -13,7 +13,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: latest
-          args: --enable-all
+          args: --enable-all -D testpackage -D exhaustivestruct
 
   Test:
     runs-on: ubuntu-latest
@@ -25,8 +25,7 @@ jobs:
         run: make setup
 
       - name: Run tests
-        run: |
-          make test
+        run: make test
 
   Vulnerability:
     runs-on: ubuntu-latest
