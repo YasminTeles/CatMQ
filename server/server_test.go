@@ -1,3 +1,4 @@
+// nolint:staticcheck
 package server
 
 import (
@@ -30,10 +31,14 @@ func TestSendMessage(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	fmt.Fprintln(conn, "msg")
-	received, _ := bufio.NewReader(conn).ReadString('\n')
+	request := `{"operation": "GET","data":""}
+`
+	fmt.Fprintln(conn, request)
 
-	assert.Equal(t, "Message received.\n", received)
+	response, _ := bufio.NewReader(conn).ReadString('\n')
+
+	assert.Equal(t, `{"operation":"EMP","data":""}
+`, response)
 }
 
 func TestGetAddress(t *testing.T) {

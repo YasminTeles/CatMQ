@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net"
+
+	"github.com/YasminTeles/CatMQ/protocol"
+	"github.com/YasminTeles/CatMQ/queue"
 )
 
 const (
@@ -40,14 +43,20 @@ func getAddress() string {
 func handleConnection(connection net.Conn) {
 	log.Printf("Client connected from %s.\n", connection.RemoteAddr().String())
 
+	queue := queue.NewQueue()
+
 	scanner := bufio.NewScanner(connection)
 	for scanner.Scan() {
-		received := scanner.Text()
-		log.Printf("Message received: %s\n", received)
+		request := scanner.Text()
+		if request == "" {
+			continue
+		}
 
-		send := "Message received."
+		log.Printf("Message received: %s\n", request)
 
-		log.Printf("Message send: %s\n", send)
-		fmt.Fprintln(connection, send)
+		response := protocol.HandleMessage(request, queue)
+
+		log.Printf("Message send: %s\n", response)
+		fmt.Fprintln(connection, response)
 	}
 }
