@@ -1,3 +1,4 @@
+// nolint: gochecknoglobals, wsl
 package server
 
 import (
@@ -16,27 +17,30 @@ const (
 	PROTOCOL = "tcp"
 )
 
+var Connection net.Conn
+
 func ListenAndServe() {
 	log.Println("Starting server...")
 
-	address := getAddress()
+	address := GetAddress()
 
 	listener, _ := net.Listen(PROTOCOL, address)
 	defer listener.Close()
 
 	log.Printf("Listening on %s.\n", address)
 
+	var err error
 	for {
-		connection, err := listener.Accept()
+		Connection, err = listener.Accept()
 		if err != nil {
 			log.Panicf("Some connection error: %s.\n", err)
 		}
 
-		go handleConnection(connection)
+		go handleConnection(Connection)
 	}
 }
 
-func getAddress() string {
+func GetAddress() string {
 	return fmt.Sprintf("%s:%s", HOST, PORT)
 }
 
@@ -58,5 +62,11 @@ func handleConnection(connection net.Conn) {
 
 		log.Printf("Message send: %s\n", response)
 		fmt.Fprintln(connection, response)
+	}
+}
+
+func Close() {
+	if err := Connection.Close(); err != nil {
+		log.Panicf("Some disconnection error: %s.\n", err)
 	}
 }

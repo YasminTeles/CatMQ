@@ -6,30 +6,44 @@ import (
 	"fmt"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestServerRun(t *testing.T) {
-	t.Parallel()
-
-	address := getAddress()
-
-	conn, err := net.Dial(PROTOCOL, address)
-	defer conn.Close()
-
-	assert.NoError(t, err)
+type ServerTestSuite struct {
+	suite.Suite
 }
 
-func TestSendMessage(t *testing.T) {
-	t.Parallel()
+func (suite *ServerTestSuite) SetupSuite() {
+	go ListenAndServe()
 
-	address := getAddress()
+	time.Sleep(1 * time.Second)
+}
+
+func (suite *ServerTestSuite) TearDownSuite() {
+	go Close()
+
+	time.Sleep(1 * time.Second)
+}
+
+func (suite *ServerTestSuite) TestServerRun() {
+	address := GetAddress()
 
 	conn, err := net.Dial(PROTOCOL, address)
 	defer conn.Close()
 
-	assert.NoError(t, err)
+	assert.NoError(suite.T(), err)
+}
+
+func (suite *ServerTestSuite) TestSendMessage() {
+	address := GetAddress()
+
+	conn, err := net.Dial(PROTOCOL, address)
+	defer conn.Close()
+
+	assert.NoError(suite.T(), err)
 
 	request := `{"operation": "GET","data":""}
 `
@@ -37,16 +51,20 @@ func TestSendMessage(t *testing.T) {
 
 	response, _ := bufio.NewReader(conn).ReadString('\n')
 
-	assert.Equal(t, `{"operation":"EMP","data":""}
+	assert.Equal(suite.T(), `{"operation":"EMP","data":""}
 `, response)
 }
 
-func TestGetAddress(t *testing.T) {
-	t.Parallel()
-
-	address := getAddress()
+func (suite *ServerTestSuite) TestGetAddress() {
+	address := GetAddress()
 
 	expected := ":23023"
 
-	assert.Equal(t, expected, address)
+	assert.Equal(suite.T(), expected, address)
+}
+
+func TestServerTestSuite(t *testing.T) {
+	t.Parallel()
+
+	suite.Run(t, new(ServerTestSuite))
 }
