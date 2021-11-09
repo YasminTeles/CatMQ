@@ -72,3 +72,29 @@ func Get() string {
 
 	return response.Data
 }
+
+func Consumer() bool {
+	request := message.NewConsumerMessage()
+
+	pack, err := send(request.ToPack())
+	if err != nil {
+		return false
+	}
+
+	response := message.NewMessage(pack)
+
+	return response.Operation == message.OperationOK
+}
+
+func Producer() bool {
+	request := message.NewProducerMessage()
+
+	pack, err := send(request.ToPack())
+	if err != nil {
+		return false
+	}
+
+	response := message.NewMessage(pack)
+
+	return response.Operation == message.OperationOK
+}

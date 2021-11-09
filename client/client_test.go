@@ -75,6 +75,24 @@ func (suite *ClientTestSuite) TestGet() {
 	assert.Equal(suite.T(), "Me gusta oír el mar.", result)
 }
 
+func (suite *ClientTestSuite) TestConsumer() {
+	Connect()
+	defer Disconnect()
+
+	result := Consumer()
+
+	assert.True(suite.T(), result)
+}
+
+func (suite *ClientTestSuite) TestProducer() {
+	Connect()
+	defer Disconnect()
+
+	result := Producer()
+
+	assert.True(suite.T(), result)
+}
+
 func TestClientTestSuite(t *testing.T) {
 	t.Parallel()
 
