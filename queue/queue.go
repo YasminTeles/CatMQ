@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-var errEmptyQueue = errors.New("empty queue")
+var ErrEmptyQueue = errors.New("empty queue")
 
 type Queue struct {
 	nodes []interface{}
@@ -20,7 +20,7 @@ func (queue *Queue) Push(node interface{}) {
 
 func (queue *Queue) Pop() (interface{}, error) {
 	if queue.IsEmpty() {
-		return nil, errEmptyQueue
+		return nil, ErrEmptyQueue
 	}
 
 	node := queue.nodes[0]

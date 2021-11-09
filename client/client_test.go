@@ -67,8 +67,10 @@ func (suite *ClientTestSuite) TestGet() {
 	Connect()
 	defer Disconnect()
 
+	Producer()
 	Publish("Me gusta oír el mar.")
 	Publish("Na feira de ontem não tinha tangerina.")
+	Consumer()
 
 	result := Get()
 
