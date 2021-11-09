@@ -31,7 +31,7 @@ func (suite *ServerTestSuite) TearDownSuite() {
 func (suite *ServerTestSuite) TestServerRun() {
 	address := GetAddress()
 
-	conn, err := net.Dial(PROTOCOL, address)
+	conn, err := net.Dial(ServerProtocol, address)
 	defer conn.Close()
 
 	assert.NoError(suite.T(), err)
@@ -40,7 +40,7 @@ func (suite *ServerTestSuite) TestServerRun() {
 func (suite *ServerTestSuite) TestSendMessage() {
 	address := GetAddress()
 
-	conn, err := net.Dial(PROTOCOL, address)
+	conn, err := net.Dial(ServerProtocol, address)
 	defer conn.Close()
 
 	assert.NoError(suite.T(), err)

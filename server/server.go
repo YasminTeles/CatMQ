@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	HOST     = "127.0.0.1"
-	PORT     = "23023"
-	PROTOCOL = "tcp"
+	ServerHost     = "127.0.0.1"
+	ServerPort     = "23023"
+	ServerProtocol = "tcp"
 )
 
 var Connection net.Conn
@@ -24,7 +24,7 @@ func ListenAndServe() {
 
 	address := GetAddress()
 
-	listener, _ := net.Listen(PROTOCOL, address)
+	listener, _ := net.Listen(ServerProtocol, address)
 	defer listener.Close()
 
 	log.Printf("Listening on %s.\n", address)
@@ -41,7 +41,7 @@ func ListenAndServe() {
 }
 
 func GetAddress() string {
-	return fmt.Sprintf("%s:%s", HOST, PORT)
+	return fmt.Sprintf("%s:%s", ServerHost, ServerPort)
 }
 
 func handleConnection(connection net.Conn) {

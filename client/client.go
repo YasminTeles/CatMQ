@@ -19,7 +19,7 @@ func Connect() bool {
 	address := server.GetAddress()
 	log.Printf("Connecting to %s...\n", address)
 
-	Connection, err = net.Dial(server.PROTOCOL, address)
+	Connection, err = net.Dial(server.ServerProtocol, address)
 	if err != nil {
 		log.Printf("Some connection error: %s.\n", err)
 	}
