@@ -98,6 +98,32 @@ func TestGetMessage(t *testing.T) {
 	assert.Exactly(t, getMessage, message)
 }
 
+func TestConsumerMessage(t *testing.T) {
+	t.Parallel()
+
+	message := NewConsumerMessage()
+
+	getMessage := &Message{
+		Operation: OperationConsumer,
+		Data:      MessageEmpty,
+	}
+
+	assert.Exactly(t, getMessage, message)
+}
+
+func TestProducerMessage(t *testing.T) {
+	t.Parallel()
+
+	message := NewProducerMessage()
+
+	getMessage := &Message{
+		Operation: OperationProducer,
+		Data:      MessageEmpty,
+	}
+
+	assert.Exactly(t, getMessage, message)
+}
+
 func TestToUnpack(t *testing.T) {
 	t.Parallel()
 

@@ -6,12 +6,14 @@ import (
 )
 
 const (
-	OperationPut     = "PUT"
-	OperationGet     = "GET"
-	OperationEmpty   = "EMP"
-	OperationError   = "ERR"
-	OperationOK      = "OK"
-	OperationMessage = "MSG"
+	OperationPut      = "PUT"
+	OperationGet      = "GET"
+	OperationEmpty    = "EMP"
+	OperationError    = "ERR"
+	OperationOK       = "OK"
+	OperationMessage  = "MSG"
+	OperationConsumer = "CON"
+	OperationProducer = "PRO"
 
 	MessageEmpty = ""
 	MessageError = "Operation failed!"
@@ -67,6 +69,20 @@ func NewPutMessage(data string) *Message {
 func NewGetMessage() *Message {
 	return &Message{
 		Operation: OperationGet,
+		Data:      MessageEmpty,
+	}
+}
+
+func NewConsumerMessage() *Message {
+	return &Message{
+		Operation: OperationConsumer,
+		Data:      MessageEmpty,
+	}
+}
+
+func NewProducerMessage() *Message {
+	return &Message{
+		Operation: OperationProducer,
 		Data:      MessageEmpty,
 	}
 }
