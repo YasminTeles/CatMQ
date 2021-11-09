@@ -58,7 +58,7 @@ func (suite *ServerTestSuite) TestSendMessage() {
 func (suite *ServerTestSuite) TestGetAddress() {
 	address := GetAddress()
 
-	expected := ":23023"
+	expected := "127.0.0.1:23023"
 
 	assert.Equal(suite.T(), expected, address)
 }
