@@ -7,8 +7,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/YasminTeles/CatMQ/protocol"
-	"github.com/YasminTeles/CatMQ/queue"
+	"github.com/YasminTeles/CatMQ/exchange"
 )
 
 const (
@@ -29,14 +28,16 @@ func ListenAndServe() {
 
 	log.Printf("Listening on %s.\n", address)
 
+	exch := exchange.NewExchange()
 	var err error
+
 	for {
 		Connection, err = listener.Accept()
 		if err != nil {
 			log.Panicf("Some connection error: %s.\n", err)
 		}
 
-		go handleConnection(Connection)
+		go handleConnection(Connection, exch)
 	}
 }
 
@@ -44,10 +45,10 @@ func GetAddress() string {
 	return fmt.Sprintf("%s:%s", ServerHost, ServerPort)
 }
 
-func handleConnection(connection net.Conn) {
+func handleConnection(connection net.Conn, exch *exchange.Exchange) {
 	log.Printf("Client connected from %s.\n", connection.RemoteAddr().String())
 
-	queue := queue.NewQueue()
+	addr := exchange.NewAddress()
 
 	scanner := bufio.NewScanner(connection)
 	for scanner.Scan() {
@@ -58,7 +59,7 @@ func handleConnection(connection net.Conn) {
 
 		log.Printf("Message received: %s\n", request)
 
-		response := protocol.HandleMessage(request, queue)
+		response := exchange.Route(request, exch, addr)
 
 		log.Printf("Message send: %s\n", response)
 		fmt.Fprintln(connection, response)

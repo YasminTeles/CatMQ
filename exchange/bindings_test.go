@@ -2,69 +2,101 @@ package exchange
 
 import (
 	"testing"
+
+	"github.com/YasminTeles/CatMQ/message"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestRoute(t *testing.T) {
+func TestRoutePut(t *testing.T) {
 	t.Parallel()
+
+	msg := `{"operation":"PUT","data":"bad word"}`
+	exchange := NewExchange()
+	addr := NewAddress()
+
+	response := Route(msg, exchange, addr)
+
+	okMessage := `{"operation":"OK","data":""}`
+	assert.Equal(t, okMessage, response)
 }
 
-// func TestHandlePutMessage(t *testing.T) {
-// 	t.Parallel()
+func TestRouteGet(t *testing.T) {
+	t.Parallel()
 
-// 	msg := `{"operation":"PUT","data":"bad word"}`
-// 	exchange := NewExchange()
+	msg := `{"operation":"GET","data":""}`
+	exchange := NewExchange()
+	exchange.unprocessed.Push("cool word")
 
-// 	response := HandleMessage(msg, exchange)
+	addr := NewAddress()
+	addr.SetConsumer()
 
-// 	okMessage := `{"operation":"OK","data":""}`
-// 	assert.Equal(t, okMessage, response)
-// }
+	response := Route(msg, exchange, addr)
 
-// func TestHandleGetMessage(t *testing.T) {
-// 	t.Parallel()
+	responseMessage := `{"operation":"MSG","data":"cool word"}`
+	assert.Equal(t, responseMessage, response)
+}
 
-// 	msg := `{"operation":"GET","data":""}`
-// 	exchange := NewExchange()
-// 	exchange.Push("cool word")
+func TestRouteError(t *testing.T) {
+	t.Parallel()
 
-// 	response := HandleMessage(msg, exchange)
+	msg := `{"operation":"POST","data":"bad word"}`
+	exchange := NewExchange()
+	addr := NewAddress()
 
-// 	responseMessage := `{"operation":"MSG","data":"cool word"}`
-// 	assert.Equal(t, responseMessage, response)
-// }
+	response := Route(msg, exchange, addr)
 
-// func TestHandleErrorMessage(t *testing.T) {
-// 	t.Parallel()
+	errorMessage := `{"operation":"ERR","data":"Operation failed!"}`
+	assert.Equal(t, errorMessage, response)
+}
 
-// 	msg := `{"operation":"POST","data":"bad word"}`
-// 	exchange := NewExchange()
+func TestRouteSetConsumerAddress(t *testing.T) {
+	t.Parallel()
 
-// 	response := HandleMessage(msg, exchange)
+	msg := `{"operation":"CON","data":""}`
+	exchange := NewExchange()
+	addr := NewAddress()
 
-// 	errorMessage := `{"operation":"ERR","data":"Operation failed!"}`
-// 	assert.Equal(t, errorMessage, response)
-// }
+	response := Route(msg, exchange, addr)
 
-// func TestHandleSetConsumerAddress(t *testing.T) {
-// 	t.Parallel()
+	okMessage := `{"operation":"OK","data":""}`
+	assert.Equal(t, okMessage, response)
+}
 
-// 	msg := `{"operation":"CON","data":""}`
-// 	exchange := NewExchange()
+func TestRouteSetProducerAddress(t *testing.T) {
+	t.Parallel()
 
-// 	response := HandleMessage(msg, exchange)
+	msg := `{"operation":"PRO","data":""}`
+	exchange := NewExchange()
+	addr := NewAddress()
 
-// 	okMessage := `{"operation":"OK","data":""}`
-// 	assert.Equal(t, okMessage, response)
-// }
+	response := Route(msg, exchange, addr)
 
-// func TestHandleSetProducerAddress(t *testing.T) {
-// 	t.Parallel()
+	okMessage := `{"operation":"OK","data":""}`
+	assert.Equal(t, okMessage, response)
+}
 
-// 	msg := `{"operation":"PRO","data":""}`
-// 	exchange := NewExchange()
+func TestHandlePut(t *testing.T) {
+	t.Parallel()
 
-// 	response := HandleMessage(msg, exchange)
+	request := message.NewPutMessage("<some data>")
+	exchange := NewExchange()
+	addr := NewAddress()
 
-// 	okMessage := `{"operation":"OK","data":""}`
-// 	assert.Equal(t, okMessage, response)
-// }
+	response := put(request, exchange, addr)
+
+	okMessage := message.NewOKMessage()
+	assert.Exactly(t, okMessage, response)
+}
+
+func TestHandleGet(t *testing.T) {
+	t.Parallel()
+
+	request := message.NewGetMessage()
+	exchange := NewExchange()
+	addr := NewAddress()
+
+	response := put(request, exchange, addr)
+
+	errorMessage := message.NewErrorMessage()
+	assert.Exactly(t, errorMessage, response)
+}
