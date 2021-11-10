@@ -42,7 +42,7 @@ func ListenAndServe() {
 }
 
 func GetAddress() string {
-	return fmt.Sprintf("%s:%s", ServerHost, ServerPort)
+	return net.JoinHostPort(ServerHost, ServerPort)
 }
 
 func handleConnection(connection net.Conn, exch *exchange.Exchange) {
