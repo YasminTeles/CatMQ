@@ -9,24 +9,25 @@ import (
 )
 
 func Start() {
-	client.Connect()
-	// defer client.Disconnect()
+	cli := client.NewClient()
+	cli.Connect()
+	defer cli.Disconnect()
 
-	client.Consumer()
+	cli.Consumer()
 
 	badwords, err := NewBadWords()
 	if err != nil {
 		log.Fatalf("Some error occurred. err: %v", err)
 	}
 
-	phrase := client.Get()
+	phrase := cli.Get()
 
 	for isValid(phrase) {
 		if !badwords.Check(phrase) {
-			client.Publish(phrase)
+			cli.Publish(phrase)
 		}
 
-		phrase = client.Get()
+		phrase = cli.Get()
 	}
 }
 

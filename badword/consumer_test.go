@@ -24,28 +24,29 @@ func (suite *ConsumerTestSuite) TearDownSuite() {
 }
 
 func (suite *ConsumerTestSuite) TestStart() {
-	client.Connect()
-	// defer client.Disconnect()
+	cli := client.NewClient()
+	cli.Connect()
+	defer cli.Disconnect()
 
-	client.Producer()
+	cli.Producer()
 	coolMessage := "Me gusta oír el mar."
-	client.Publish(coolMessage)
+	cli.Publish(coolMessage)
 
 	niceMessage := "Arturo y Lucho son mis patas."
-	client.Publish(niceMessage)
+	cli.Publish(niceMessage)
 
 	badMessage := "O pato feio foi a feira."
-	client.Publish(badMessage)
+	cli.Publish(badMessage)
 
 	Start()
 
-	result := client.Get()
+	result := cli.Get()
 	assert.Equal(suite.T(), coolMessage, result)
 
-	result = client.Get()
+	result = cli.Get()
 	assert.Equal(suite.T(), niceMessage, result)
 
-	result = client.Get()
+	result = cli.Get()
 	assert.Equal(suite.T(), "", result)
 }
 

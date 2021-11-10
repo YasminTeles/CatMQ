@@ -23,38 +23,52 @@ func (suite *ClientTestSuite) TearDownSuite() {
 	server.Close()
 }
 
-func (suite *ClientTestSuite) TestConnect() {
-	result := Connect()
+func (suite *ClientTestSuite) TestNewClient() {
+	client := NewClient()
 
-	assert.True(suite.T(), result)
+	newClient := &Client{
+		connection: nil,
+	}
+	assert.Exactly(suite.T(), newClient, client)
+}
+
+func (suite *ClientTestSuite) TestConnect() {
+	client := NewClient()
+
+	client.Connect()
+
+	assert.NotNil(suite.T(), client.connection)
 }
 
 func (suite *ClientTestSuite) TestDisconnect() {
-	Connect()
+	client := NewClient()
+	client.Connect()
 
-	result := Disconnect()
+	err := client.Disconnect()
 
-	assert.True(suite.T(), result)
+	assert.NoError(suite.T(), err)
 }
 
 func (suite *ClientTestSuite) TestPublish() {
-	Connect()
-	defer Disconnect()
+	client := NewClient()
+	client.Connect()
+	defer client.Disconnect()
 
 	message := "Na feira de ontem não tinha tangerina."
-	result := Publish(message)
+	result := client.Publish(message)
 
 	assert.True(suite.T(), result)
 }
 
 func (suite *ClientTestSuite) TestSend() {
-	Connect()
-	defer Disconnect()
+	client := NewClient()
+	client.Connect()
+	defer client.Disconnect()
 
 	request := `{"operation": "GET","data":""}
 `
 
-	result, err := send(request)
+	result, err := client.send(request)
 
 	assert.NoError(suite.T(), err)
 
@@ -64,33 +78,36 @@ func (suite *ClientTestSuite) TestSend() {
 }
 
 func (suite *ClientTestSuite) TestGet() {
-	Connect()
-	defer Disconnect()
+	client := NewClient()
+	client.Connect()
+	defer client.Disconnect()
 
-	Producer()
-	Publish("Me gusta oír el mar.")
-	Publish("Na feira de ontem não tinha tangerina.")
-	Consumer()
+	client.Producer()
+	client.Publish("Me gusta oír el mar.")
+	client.Publish("Na feira de ontem não tinha tangerina.")
+	client.Consumer()
 
-	result := Get()
+	result := client.Get()
 
 	assert.Equal(suite.T(), "Me gusta oír el mar.", result)
 }
 
 func (suite *ClientTestSuite) TestConsumer() {
-	Connect()
-	defer Disconnect()
+	client := NewClient()
+	client.Connect()
+	defer client.Disconnect()
 
-	result := Consumer()
+	result := client.Consumer()
 
 	assert.True(suite.T(), result)
 }
 
 func (suite *ClientTestSuite) TestProducer() {
-	Connect()
-	defer Disconnect()
+	client := NewClient()
+	client.Connect()
+	defer client.Disconnect()
 
-	result := Producer()
+	result := client.Producer()
 
 	assert.True(suite.T(), result)
 }
