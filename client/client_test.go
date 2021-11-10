@@ -1,4 +1,4 @@
-// nolint:wsl
+// nolint:wsl,errcheck
 package client
 
 import (
@@ -12,36 +12,55 @@ import (
 
 type ClientTestSuite struct {
 	suite.Suite
+	Server *server.Server
+	port   string
 }
 
 func (suite *ClientTestSuite) SetupSuite() {
-	go server.ListenAndServe()
+	suite.port = "23002"
+	suite.Server = server.NewServer(suite.port)
+
+	go suite.Server.ListenAndServe()
+
 	time.Sleep(1 * time.Second)
 }
 
 func (suite *ClientTestSuite) TearDownSuite() {
-	server.Close()
+	time.Sleep(1 * time.Second)
+	go suite.Server.Close()
 }
 
 func (suite *ClientTestSuite) TestNewClient() {
-	client := NewClient()
+	client := NewClient(suite.port)
 
 	newClient := &Client{
+		port:       suite.port,
+		connection: nil,
+	}
+	assert.Exactly(suite.T(), newClient, client)
+}
+
+func (suite *ClientTestSuite) TestNewClientDefault() {
+	client := NewClientDefault()
+
+	newClient := &Client{
+		port:       server.ServerPort,
 		connection: nil,
 	}
 	assert.Exactly(suite.T(), newClient, client)
 }
 
 func (suite *ClientTestSuite) TestConnect() {
-	client := NewClient()
+	client := NewClient(suite.port)
 
 	client.Connect()
+	defer client.Disconnect()
 
 	assert.NotNil(suite.T(), client.connection)
 }
 
 func (suite *ClientTestSuite) TestDisconnect() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 
 	err := client.Disconnect()
@@ -50,7 +69,7 @@ func (suite *ClientTestSuite) TestDisconnect() {
 }
 
 func (suite *ClientTestSuite) TestPublish() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 	defer client.Disconnect()
 
@@ -61,7 +80,7 @@ func (suite *ClientTestSuite) TestPublish() {
 }
 
 func (suite *ClientTestSuite) TestSend() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 	defer client.Disconnect()
 
@@ -78,7 +97,7 @@ func (suite *ClientTestSuite) TestSend() {
 }
 
 func (suite *ClientTestSuite) TestGet() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 	defer client.Disconnect()
 
@@ -93,7 +112,7 @@ func (suite *ClientTestSuite) TestGet() {
 }
 
 func (suite *ClientTestSuite) TestConsumer() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 	defer client.Disconnect()
 
@@ -103,7 +122,7 @@ func (suite *ClientTestSuite) TestConsumer() {
 }
 
 func (suite *ClientTestSuite) TestProducer() {
-	client := NewClient()
+	client := NewClient(suite.port)
 	client.Connect()
 	defer client.Disconnect()
 

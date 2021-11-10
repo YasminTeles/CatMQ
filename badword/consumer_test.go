@@ -1,3 +1,4 @@
+// nolint: errcheck
 package badword
 
 import (
@@ -12,19 +13,24 @@ import (
 
 type ConsumerTestSuite struct {
 	suite.Suite
+	server *server.Server
 }
 
 func (suite *ConsumerTestSuite) SetupSuite() {
-	go server.ListenAndServe()
+	suite.server = server.NewServerDefault()
+
+	go suite.server.ListenAndServe()
+
 	time.Sleep(1 * time.Second)
 }
 
 func (suite *ConsumerTestSuite) TearDownSuite() {
-	server.Close()
+	time.Sleep(1 * time.Second)
+	// go suite.server.Close()
 }
 
 func (suite *ConsumerTestSuite) TestStart() {
-	cli := client.NewClient()
+	cli := client.NewClientDefault()
 	cli.Connect()
 	defer cli.Disconnect()
 

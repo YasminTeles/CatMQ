@@ -12,17 +12,23 @@ import (
 )
 
 type Client struct {
+	port       string
 	connection net.Conn
 }
 
-func NewClient() *Client {
+func NewClient(port string) *Client {
 	return &Client{
+		port:       port,
 		connection: nil,
 	}
 }
 
+func NewClientDefault() *Client {
+	return NewClient(server.ServerPort)
+}
+
 func (cli *Client) Connect() {
-	address := server.GetAddress()
+	address := cli.getAddress()
 	log.Printf("Connecting to server %s...\n", address)
 
 	connection, err := net.Dial(server.ServerProtocol, address)
@@ -31,6 +37,10 @@ func (cli *Client) Connect() {
 	}
 
 	cli.connection = connection
+}
+
+func (cli *Client) getAddress() string {
+	return net.JoinHostPort(server.ServerHost, cli.port)
 }
 
 func (cli *Client) Disconnect() error {

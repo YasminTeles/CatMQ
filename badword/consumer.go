@@ -9,7 +9,7 @@ import (
 )
 
 func Start() {
-	cli := client.NewClient()
+	cli := client.NewClientDefault()
 	cli.Connect()
 	defer cli.Disconnect()
 
