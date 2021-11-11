@@ -9,6 +9,6 @@ WORKDIR /CatMQ
 RUN make setup
 RUN make build
 
-EXPOSE 3000
+EXPOSE 23023
 
 CMD ["./main"]
