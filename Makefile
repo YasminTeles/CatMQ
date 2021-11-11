@@ -19,6 +19,12 @@ test: ## Run test.
 build: ## Build server.
 	@go build -v -o main .
 
+build-consumer: ## Build consumer client.
+	@go build -v -o clientConsumer ./consumer/.
+
+run-consumer: ## Run consumer client.
+	@go run ./consumer/consumer.go
+
 docker-build: ## Build container's Docker.
 	@docker build -t server .
 
