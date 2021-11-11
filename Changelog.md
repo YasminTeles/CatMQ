@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.2.0](https://github.com/YasminTeles/CatMQ/compare/1.1.0...1.2.0) (2021-11-11)
+
+
+### Features
+
+* wait a few seconds to consumer messages ([ba8dccd](https://github.com/YasminTeles/CatMQ/commit/ba8dccdd016d9a2fa955139440c0b18ad65c8521))
+
 # [1.1.0](https://github.com/YasminTeles/CatMQ/compare/1.0.0...1.1.0) (2021-11-11)
 
 
