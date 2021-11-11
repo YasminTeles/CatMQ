@@ -3,10 +3,16 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/YasminTeles/CatMQ/badword"
 	"github.com/YasminTeles/CatMQ/client"
 	"github.com/YasminTeles/CatMQ/message"
+)
+
+const (
+	Second = 1
+	Minute = Second * 60
 )
 
 func main() {
@@ -24,6 +30,8 @@ func main() {
 	phrase := cli.Get()
 
 	for isValid(phrase) {
+		wait(phrase)
+
 		if !badwords.Check(phrase) {
 			cli.Publish(phrase)
 		}
@@ -33,5 +41,11 @@ func main() {
 }
 
 func isValid(phrase string) bool {
-	return phrase != "" && phrase != message.MessageError
+	return phrase != message.MessageError
+}
+
+func wait(phrase string) {
+	if phrase == "" {
+		time.Sleep(Minute * time.Second)
+	}
 }
