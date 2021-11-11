@@ -1,5 +1,6 @@
 FROM golang:1.17
 
+RUN rm -rf /CatMQ
 RUN mkdir /CatMQ
 
 ADD . /CatMQ
@@ -10,5 +11,3 @@ RUN make setup
 RUN make build
 
 EXPOSE 23023
-
-CMD ["./main"]

@@ -7,6 +7,7 @@
 *.dylib
 
 main
+clientConsumer
 
 ### Go Patch ###
 /vendor/
