@@ -1,5 +1,5 @@
 // nolint: errcheck
-package badword
+package main
 
 import (
 	"testing"
@@ -44,7 +44,7 @@ func (suite *ConsumerTestSuite) TestStart() {
 	badMessage := "O pato feio foi a feira."
 	cli.Publish(badMessage)
 
-	Start()
+	main()
 
 	result := cli.Get()
 	assert.Equal(suite.T(), coolMessage, result)

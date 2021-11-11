@@ -1,21 +1,22 @@
 // nolint: errcheck
-package badword
+package main
 
 import (
 	"log"
 
+	"github.com/YasminTeles/CatMQ/badword"
 	"github.com/YasminTeles/CatMQ/client"
 	"github.com/YasminTeles/CatMQ/message"
 )
 
-func Start() {
+func main() {
 	cli := client.NewClientDefault()
 	cli.Connect()
 	defer cli.Disconnect()
 
 	cli.Consumer()
 
-	badwords, err := NewBadWords()
+	badwords, err := badword.NewBadWords()
 	if err != nil {
 		log.Fatalf("Some error occurred. err: %v", err)
 	}
