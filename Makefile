@@ -26,13 +26,13 @@ run-consumer: ## Run consumer client.
 	@go run ./consumer/consumer.go
 
 docker-build: ## Build container's Docker.
-	@docker build -t server .
+	@docker-compose build
 
 docker-run: ## Run container's Docker.
-	@docker run --name CatMQ -p 23023:23023 -it server
+	@docker-compose up
 
 docker-kill: ## Kill container's Docker.
-	@docker kill CatMQ
+	@docker-compose down
 
 lint: ## Run lint.
 	golangci-lint run ./... --enable-all
