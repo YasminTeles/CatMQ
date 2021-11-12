@@ -1,15 +1,15 @@
-version: "2"
+version: "3"
 
 services:
   client:
     build:
       context: ./
       dockerfile: ./consumer/Dockerfile
-
     command: ["./wait-for-it.sh" , "localhost:23023" , "--timeout=10" , "--" , "./clientConsumer"]
-
+    deploy:
+      mode: replicated
+      replicas: 2
     network_mode: service:server
-
     depends_on:
       - server
 
@@ -17,8 +17,6 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-
     command: ./main
-
     ports:
       - 23023:23023
